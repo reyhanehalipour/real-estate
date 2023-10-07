@@ -5,25 +5,47 @@ import Home from "@/components/modules/Home";
 function index() {
 
   const[Search,setSearch]=useState("")
-  const[homes, sethomes]=useState([...db.homes])
+  const[homes, setHomes]=useState([...db.homes])
+  const [sort, setSort] = useState("-1");
 
   useEffect(()=>{
     const NewHomes= db.homes.filter((home)=>home.title.includes(Search))
-    sethomes(NewHomes)
+    setHomes(NewHomes)
   },[Search])
+
+  
+  useEffect(() => {
+    switch (sort) {
+      case "price": {
+        const newHomes = [...homes].sort((a, b) => a.price - b.price);
+        setHomes(newHomes);
+        break;
+      }
+      case "room": {
+        const newHomes = [...homes].sort((a, b) => a.roomCount - b.roomCount);
+        setHomes(newHomes);
+        break;
+      }
+      case "meterage": {
+        const newHomes = [...homes].sort((a, b) => a.meterage - b.meterage);
+        setHomes(newHomes);
+        break;
+      }
+      default: {
+        setHomes([...db.homes]);
+      }
+    }
+  }, [sort]);
 
   return (
     <div class="home-section" id="houses">
       <div class="home-filter-search">
         <div class="home-filter">
-          <select name="" id="">
-            <option value="" selected>
-              انتخاب کنید
-            </option>
-            <option value="">بر اساس قیمت</option>
-            <option value="">بر اساس تعداد اتاق</option>
-            <option value="">بر اساس ادرس</option>
-            <option value="">بر اساس اندازه</option>
+          <select defaultValue={sort} onChange={(e) => setSort(e.target.value)}>
+            <option value="-1" selected>  انتخاب کنید </option>
+            <option value="price">بر اساس قیمت</option>
+            <option value="room">بر اساس تعداد اتاق</option>
+            <option value="meterage">بر اساس اندازه</option>
           </select>
         </div>
         <div class="home-search">
